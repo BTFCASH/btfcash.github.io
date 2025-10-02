@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Completa de Alquimia - Albion Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tier0: #9E9E9E; --tier1: #4CAF50; --tier2: #2196F3; 
+            --tier3: #9C27B0; --tier4: #FF9800; --tier5: #F44336;
+            --tier6: #795548; --tier7: #607D8B; --tier8: #E91E63;
+            --bg-color-dark: #1a1a2e;
+            --card-bg: #2a2a4a;
+            --header-bg: linear-gradient(135deg, #3a3a6a, #5a5a8a);
+            --text-color-light: #e0e0e0;
+            --primary-btn: #6a4c93;
+            --primary-btn-hover: #8a6bbd;
+            --input-bg: #3c3c6c;
+            --table-header-bg: #4a4a7a;
+            --table-border: #5a5a8a;
+            --results-bg: #2a4a2a;
+            --profit-color: #4CAF50;
+            --loss-color: #F44336;
+            --costs-bg: #4a2a3a;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-light);
+            line-height: 1.6;
+            background-image: radial-gradient(circle at 10% 20%, rgba(40, 40, 80, 0.8) 0%, rgba(10, 10, 30, 0.9) 90%);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            background: var(--header-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 Q50,20 100,0 L100,100 Q50,80 0,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+            opacity: 0.3;
+        }
+        h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 2.8rem;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #c0c0e0;
+            margin-top: 10px;
+            font-weight: 400;
+            position: relative;
+        }
+        h2 {
+            color: #c0c0e0;
+            border-bottom: 2px solid var(--table-border);
+            padding-bottom: 10px;
+            margin: 25px 0 20px;
+            position: relative;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--tier8), var(--tier5));
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+        }
+        .tier-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 8px;
+            font-size: 0.95rem;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #b0b0d0;
+        }
+        select, input[type="number"] {
+            padding: 12px 15px;
+            border: 1px solid var(--table-border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color-light);
+            margin: 5px 0;
+            width: 100%;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        select:focus, input[type="number"]:focus {
+            border-color: var(--primary-btn-hover);
+            box-shadow: 0 0 0 3px rgba(138, 107, 189, 0.5);
+            outline: none;
+        }
+        button {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+            margin-top: 10px;
+            background: var(--primary-btn);
+            width: 100%;
+        }
+        button:hover {
+            background: var(--primary-btn-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .ingredients-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .ingredients-table th, 
+        .ingredients-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--table-border);
+        }
+        .ingredients-table th {
+            background-color: var(--table-header-bg);
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .ingredients-table tr:last-child td {
+            border-bottom: none;
+        }
+        .ingredients-table tbody tr:nth-child(even) {
+            background-color: #353555;
+        }
+        .ingredients-table tbody tr:hover {
+            background-color: #404060;
+        }
+        .summary-card {
+            background: var(--results-bg);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            border: 1px solid #3a6a3a;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .costs-card {
+            background: var(--costs-bg);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            border: 1px solid #6a3a4a;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .summary-card h3, .costs-card h3 {
+            color: #a0e0a0;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #4a8a4a;
+            padding-bottom: 10px;
+        }
+        .costs-card h3 {
+            color: #e0a0c0;
+            border-bottom: 2px solid #8a4a6a;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #4a8a4a;
+        }
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        .summary-item strong {
+            color: #c0f0c0;
+        }
+        .profit-loss {
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .profit {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid var(--profit-color);
+        }
+        .loss {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid var(--loss-color);
+        }
+        .profit-loss h3 {
+            color: #c0c0e0;
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+        .profit-loss .profit-title {
+            color: var(--profit-color);
+            border-bottom-color: var(--profit-color);
+        }
+        .profit-loss .loss-title {
+            color: var(--loss-color);
+            border-bottom-color: var(--loss-color);
+        }
+        .profit-loss-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 1.1rem;
+        }
+        .profit-loss-item.total {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px dashed;
+        }
+        .profit-value {
+            color: var(--profit-color);
+        }
+        .loss-value {
+            color: var(--loss-color);
+        }
+        
+        /* Tier Colors */
+        .tier-8 { background-color: var(--tier8); }
+        .tier-7 { background-color: var(--tier7); }
+        .tier-6 { background-color: var(--tier6); }
+        .tier-5 { background-color: var(--tier5); }
+        .tier-4 { background-color: var(--tier4); }
+        .tier-3 { background-color: var(--tier3); }
+        .tier-2 { background-color: var(--tier2); }
+        .tier-1 { background-color: var(--tier1); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #9090b0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .ingredients-table {
+                font-size: 0.9rem;
+            }
+            .ingredients-table th, 
+            .ingredients-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Calculadora Completa de Alquimia</h1>
+        <p class="subtitle">Albion Online - Ingredientes, Costos y Rentabilidad</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Selección de Receta</h2>
+            <div class="form-group">
+                <label for="potion-select">Poción a Fabricar:</label>
+                <select id="potion-select" onchange="updateRecipe()">
+                    <!-- Se llenará con JavaScript -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="tier-select">Tier/Sub-tier:</label>
+                <select id="tier-select" onchange="updateMaterials()">
+                    <!-- Se llenará con JavaScript -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="batch-count">Cantidad de Pociones a Fabricar:</label>
+                <input type="number" id="batch-count" value="5" min="1" oninput="calculateAll()">
+            </div>
+            
+            <div class="form-group">
+                <label for="return-rate">Tasa de Devolución (%):</label>
+                <input type="number" id="return-rate" value="15" min="0" max="85" oninput="calculateAll()">
+            </div>
+            
+            <button onclick="calculateAll()">Calcular Todo</button>
+        </div>
+        
+        <div class="card">
+            <h2>Ingredientes y Costos</h2>
+            
+            <table class="ingredients-table">
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Costo Total</th>
+                    </tr>
+                </thead>
+                <tbody id="ingredients-body">
+                    <!-- Se llenará con JavaScript -->
+                </tbody>
+            </table>
+            
+            <div class="costs-card">
+                <h3>Resumen de Costos</h3>
+                <div id="costs-summary">
+                    <!-- Se llenará con JavaScript -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="potion-price">Precio de Venta por Poción (Silver):</label>
+                <input type="number" id="potion-price" min="0" oninput="calculateProfit()">
+            </div>
+            
+            <div id="profit-loss" class="profit-loss">
+                <h3 class="profit-title">Resultados de Rentabilidad</h3>
+                <div id="profit-loss-content">
+                    <!-- Se llenará con JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Calculadora de Alquimia para Albion Online - Planifica tus producciones y maximiza tus ganancias</p>
+    </div>
+
+    <script>
+        // Base de datos completa de pociones con todas las recetas en español
+        const potions = [
+            // Tier 8
+            {
+                id: 1,
+                name: "Gran Tornado en una Botella",
+                tier: 8,
+                subtiers: ["8.0", "8.1", "8.2", "8.3"],
+                materials: {
+                    "8.0": [
+                        { name: "Excelente Dawnfeather", quantity: 1 },
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 }
+                    ],
+                    "8.1": [
+                        { name: "Excelente Dawnfeather", quantity: 1 },
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "8.2": [
+                        { name: "Excelente Dawnfeather", quantity: 1 },
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "8.3": [
+                        { name: "Excelente Dawnfeather", quantity: 1 },
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 2,
+                name: "Poción de Fuego Infernal Mayor",
+                tier: 8,
+                subtiers: ["8.0", "8.1", "8.2", "8.3"],
+                materials: {
+                    "8.0": [
+                        { name: "Leche de vaca", quantity: 72 },
+                        { name: "Milenrama necrófaga", quantity: 36 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 }
+                    ],
+                    "8.1": [
+                        { name: "Leche de vaca", quantity: 72 },
+                        { name: "Milenrama necrófaga", quantity: 36 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "8.2": [
+                        { name: "Leche de vaca", quantity: 72 },
+                        { name: "Milenrama necrófaga", quantity: 36 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "8.3": [
+                        { name: "Leche de vaca", quantity: 72 },
+                        { name: "Milenrama necrófaga", quantity: 36 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 3,
+                name: "Poción de Berserk Mayor",
+                tier: 8,
+                subtiers: ["8.0", "8.1", "8.2", "8.3"],
+                materials: {
+                    "8.0": [
+                        { name: "Excelentes colmillos de hombre lobo", quantity: 1 },
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Consuelda de hojas brillantes", quantity: 36 },
+                        { name: "Schnapps de patata", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 }
+                    ],
+                    "8.1": [
+                        { name: "Excelentes colmillos de hombre lobo", quantity: 1 },
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Consuelda de hojas brillantes", quantity: 36 },
+                        { name: "Schnapps de patata", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "8.2": [
+                        { name: "Excelentes colmillos de hombre lobo", quantity: 1 },
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Consuelda de hojas brillantes", quantity: 36 },
+                        { name: "Schnapps de patata", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "8.3": [
+                        { name: "Excelentes colmillos de hombre lobo", quantity: 1 },
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Consuelda de hojas brillantes", quantity: 36 },
+                        { name: "Schnapps de patata", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 4,
+                name: "Poción de Invisibilidad",
+                tier: 8,
+                subtiers: ["8.0", "8.1", "8.2", "8.3"],
+                materials: {
+                    "8.0": [
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Cardo de dragón", quantity: 36 },
+                        { name: "Leche de vaca", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 }
+                    ],
+                    "8.1": [
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Cardo de dragón", quantity: 36 },
+                        { name: "Leche de vaca", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "8.2": [
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Cardo de dragón", quantity: 36 },
+                        { name: "Leche de vaca", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "8.3": [
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Cardo de dragón", quantity: 36 },
+                        { name: "Leche de vaca", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 5,
+                name: "Poción de Veneno Mayor",
+                tier: 8,
+                subtiers: ["8.0", "8.1", "8.2", "8.3"],
+                materials: {
+                    "8.0": [
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Cardo de dragón", quantity: 36 },
+                        { name: "Leche de vaca", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 }
+                    ],
+                    "8.1": [
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Cardo de dragón", quantity: 36 },
+                        { name: "Leche de vaca", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "8.2": [
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Cardo de dragón", quantity: 36 },
+                        { name: "Leche de vaca", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "8.3": [
+                        { name: "Milenrama necrófaga", quantity: 72 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Cardo de dragón", quantity: 36 },
+                        { name: "Leche de vaca", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 6,
+                name: "Poción de Recolección Mayor",
+                tier: 8,
+                subtiers: ["8.0", "8.1", "8.2", "8.3"],
+                materials: {
+                    "8.0": [
+                        { name: "Excelente diente de piedra rúnica", quantity: 1 },
+                        { name: "Mantequilla de vaca", quantity: 72 },
+                        { name: "Milenrama necrófaga", quantity: 36 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Dedalera esquiva", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 }
+                    ],
+                    "8.1": [
+                        { name: "Excelente diente de piedra rúnica", quantity: 1 },
+                        { name: "Mantequilla de vaca", quantity: 72 },
+                        { name: "Milenrama necrófaga", quantity: 36 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Dedalera esquiva", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "8.2": [
+                        { name: "Excelente diente de piedra rúnica", quantity: 1 },
+                        { name: "Mantequilla de vaca", quantity: 72 },
+                        { name: "Milenrama necrófaga", quantity: 36 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Dedalera esquiva", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "8.3": [
+                        { name: "Excelente diente de piedra rúnica", quantity: 1 },
+                        { name: "Mantequilla de vaca", quantity: 72 },
+                        { name: "Milenrama necrófaga", quantity: 36 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 36 },
+                        { name: "Dedalera esquiva", quantity: 18 },
+                        { name: "Aguardiente de calabaza", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            
+            // Tier 7
+            {
+                id: 7,
+                name: "Poción Calmante Mayor",
+                tier: 7,
+                subtiers: ["7.0", "7.1", "7.2", "7.3"],
+                materials: {
+                    "7.0": [
+                        { name: "Excelentes garras de sombra", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 144 },
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Consuelda de hojas brillantes", quantity: 72 },
+                        { name: "Agárico arcano", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 }
+                    ],
+                    "7.1": [
+                        { name: "Excelentes garras de sombra", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 144 },
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Consuelda de hojas brillantes", quantity: 72 },
+                        { name: "Agárico arcano", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Extracto arcano básico", quantity: 90 }
+                    ],
+                    "7.2": [
+                        { name: "Excelentes garras de sombra", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 144 },
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Consuelda de hojas brillantes", quantity: 72 },
+                        { name: "Agárico arcano", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Extracto Arcano Refinado", quantity: 90 }
+                    ],
+                    "7.3": [
+                        { name: "Excelentes garras de sombra", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 144 },
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Consuelda de hojas brillantes", quantity: 72 },
+                        { name: "Agárico arcano", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Extracto Arcano Puro", quantity: 90 }
+                    ]
+                },
+                batchSize: 10
+            },
+            {
+                id: 8,
+                name: "Poción de Limpieza Mayor",
+                tier: 7,
+                subtiers: ["7.0", "7.1", "7.2", "7.3"],
+                materials: {
+                    "7.0": [
+                        { name: "Excelente raíz de Silvio", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Consuelda de hojas brillantes", quantity: 36 },
+                        { name: "Mantequilla de oveja", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 }
+                    ],
+                    "7.1": [
+                        { name: "Excelente raíz de Silvio", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Consuelda de hojas brillantes", quantity: 36 },
+                        { name: "Mantequilla de oveja", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "7.2": [
+                        { name: "Excelente raíz de Silvio", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Consuelda de hojas brillantes", quantity: 36 },
+                        { name: "Mantequilla de oveja", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "7.3": [
+                        { name: "Excelente raíz de Silvio", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Consuelda de hojas brillantes", quantity: 36 },
+                        { name: "Mantequilla de oveja", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 9,
+                name: "Poción de Gigantificación Mayor",
+                tier: 7,
+                subtiers: ["7.0", "7.1", "7.2", "7.3"],
+                materials: {
+                    "7.0": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 }
+                    ],
+                    "7.1": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "7.2": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "7.3": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 10,
+                name: "Poción de Resistencia Mayor",
+                tier: 7,
+                subtiers: ["7.0", "7.1", "7.2", "7.3"],
+                materials: {
+                    "7.0": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Leche de oveja", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 }
+                    ],
+                    "7.1": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Leche de oveja", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "7.2": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Leche de oveja", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "7.3": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Leche de oveja", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 11,
+                name: "Poción Pegajosa Mayor",
+                tier: 7,
+                subtiers: ["7.0", "7.1", "7.2", "7.3"],
+                materials: {
+                    "7.0": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 }
+                    ],
+                    "7.1": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "7.2": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "7.3": [
+                        { name: "Gordolobo tocado por el fuego", quantity: 72 },
+                        { name: "Dedalera esquiva", quantity: 36 },
+                        { name: "Bardana almenada", quantity: 36 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Malvavisco de maíz", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 12,
+                name: "Poción de Ácido Mayor",
+                tier: 7,
+                subtiers: ["7.0", "7.1", "7.2", "7.3"],
+                materials: {
+                    "7.0": [
+                        { name: "Excelentes patas espirituales", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 144 },
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Schnapps de patata", quantity: 72 },
+                        { name: "Leche de oveja", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 }
+                    ],
+                    "7.1": [
+                        { name: "Excelentes patas espirituales", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 144 },
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Schnapps de patata", quantity: 72 },
+                        { name: "Leche de oveja", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Extracto arcano básico", quantity: 90 }
+                    ],
+                    "7.2": [
+                        { name: "Excelentes patas espirituales", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 144 },
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Schnapps de patata", quantity: 72 },
+                        { name: "Leche de oveja", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Extracto Arcano Refinado", quantity: 90 }
+                    ],
+                    "7.3": [
+                        { name: "Excelentes patas espirituales", quantity: 1 },
+                        { name: "Gordolobo tocado por el fuego", quantity: 144 },
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Schnapps de patata", quantity: 72 },
+                        { name: "Leche de oveja", quantity: 36 },
+                        { name: "Malvavisco de maíz", quantity: 36 },
+                        { name: "Extracto Arcano Puro", quantity: 90 }
+                    ]
+                },
+                batchSize: 10
+            },
+            
+            // Tier 6
+            {
+                id: 13,
+                name: "Tornado en una Botella",
+                tier: 6,
+                subtiers: ["6.0", "6.1", "6.2", "6.3"],
+                materials: {
+                    "6.0": [
+                        { name: "Pluma fina del amanecer", quantity: 1 },
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Cardo de dragón", quantity: 12 },
+                        { name: "Huevos de gallina", quantity: 6 }
+                    ],
+                    "6.1": [
+                        { name: "Pluma fina del amanecer", quantity: 1 },
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Cardo de dragón", quantity: 12 },
+                        { name: "Huevos de gallina", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "6.2": [
+                        { name: "Pluma fina del amanecer", quantity: 1 },
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Cardo de dragón", quantity: 12 },
+                        { name: "Huevos de gallina", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "6.3": [
+                        { name: "Pluma fina del amanecer", quantity: 1 },
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Cardo de dragón", quantity: 12 },
+                        { name: "Huevos de gallina", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 14,
+                name: "Poción Berserk",
+                tier: 6,
+                subtiers: ["6.0", "6.1", "6.2", "6.3"],
+                materials: {
+                    "6.0": [
+                        { name: "Finos colmillos de hombre lobo", quantity: 1 },
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Agárico arcano", quantity: 12 },
+                        { name: "Schnapps de patata", quantity: 6 }
+                    ],
+                    "6.1": [
+                        { name: "Finos colmillos de hombre lobo", quantity: 1 },
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Agárico arcano", quantity: 12 },
+                        { name: "Schnapps de patata", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "6.2": [
+                        { name: "Finos colmillos de hombre lobo", quantity: 1 },
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Agárico arcano", quantity: 12 },
+                        { name: "Schnapps de patata", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "6.3": [
+                        { name: "Finos colmillos de hombre lobo", quantity: 1 },
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Agárico arcano", quantity: 12 },
+                        { name: "Schnapps de patata", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 15,
+                name: "Poción de Energía Mayor",
+                tier: 6,
+                subtiers: ["6.0", "6.1", "6.2", "6.3"],
+                materials: {
+                    "6.0": [
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Leche de oveja", quantity: 18 },
+                        { name: "Schnapps de patata", quantity: 18 }
+                    ],
+                    "6.1": [
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Leche de oveja", quantity: 18 },
+                        { name: "Schnapps de patata", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "6.2": [
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Leche de oveja", quantity: 18 },
+                        { name: "Schnapps de patata", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "6.3": [
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Leche de oveja", quantity: 18 },
+                        { name: "Schnapps de patata", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 16,
+                name: "Poción de Curación Mayor",
+                tier: 6,
+                subtiers: ["6.0", "6.1", "6.2", "6.3"],
+                materials: {
+                    "6.0": [
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Schnapps de patata", quantity: 18 }
+                    ],
+                    "6.1": [
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Schnapps de patata", quantity: 18 },
+                        { name: "Extracto arcano básico", quantity: 45 }
+                    ],
+                    "6.2": [
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Schnapps de patata", quantity: 18 },
+                        { name: "Extracto Arcano Refinado", quantity: 45 }
+                    ],
+                    "6.3": [
+                        { name: "Dedalera esquiva", quantity: 72 },
+                        { name: "Huevos de ganso", quantity: 18 },
+                        { name: "Schnapps de patata", quantity: 18 },
+                        { name: "Extracto Arcano Puro", quantity: 45 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 17,
+                name: "Poción de Veneno",
+                tier: 6,
+                subtiers: ["6.0", "6.1", "6.2", "6.3"],
+                materials: {
+                    "6.0": [
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Cardo de dragón", quantity: 12 },
+                        { name: "Consuelda de hojas brillantes", quantity: 12 },
+                        { name: "Leche de oveja", quantity: 6 }
+                    ],
+                    "6.1": [
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Cardo de dragón", quantity: 12 },
+                        { name: "Consuelda de hojas brillantes", quantity: 12 },
+                        { name: "Leche de oveja", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "6.2": [
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Cardo de dragón", quantity: 12 },
+                        { name: "Consuelda de hojas brillantes", quantity: 12 },
+                        { name: "Leche de oveja", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "6.3": [
+                        { name: "Dedalera esquiva", quantity: 24 },
+                        { name: "Cardo de dragón", quantity: 12 },
+                        { name: "Consuelda de hojas brillantes", quantity: 12 },
+                        { name: "Leche de oveja", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 18,
+                name: "Poción de Recolección",
+                tier: 6,
+                subtiers: ["6.0", "6.1", "6.2", "6.3"],
+                materials: {
+                    "6.0": [
+                        { name: "Diente de piedra rúnica fina", quantity: 1 },
+                        { name: "Mantequilla de oveja", quantity: 24 },
+                        { name: "Dedalera esquiva", quantity: 12 },
+                        { name: "Cardo de dragón", quantity: 6 }
+                    ],
+                    "6.1": [
+                        { name: "Diente de piedra rúnica fina", quantity: 1 },
+                        { name: "Mantequilla de oveja", quantity: 24 },
+                        { name: "Dedalera esquiva", quantity: 12 },
+                        { name: "Cardo de dragón", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "6.2": [
+                        { name: "Diente de piedra rúnica fina", quantity: 1 },
+                        { name: "Mantequilla de oveja", quantity: 24 },
+                        { name: "Dedalera esquiva", quantity: 12 },
+                        { name: "Cardo de dragón", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "6.3": [
+                        { name: "Diente de piedra rúnica fina", quantity: 1 },
+                        { name: "Mantequilla de oveja", quantity: 24 },
+                        { name: "Dedalera esquiva", quantity: 12 },
+                        { name: "Cardo de dragón", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 19,
+                name: "Poción de Fuego Infernal",
+                tier: 6,
+                subtiers: ["6.0", "6.1", "6.2", "6.3"],
+                materials: {
+                    "6.0": [
+                        { name: "Cuerno de diablillo fino", quantity: 1 },
+                        { name: "Leche de oveja", quantity: 24 },
+                        { name: "Dedalera esquiva", quantity: 12 },
+                        { name: "Huevos de gallina", quantity: 6 }
+                    ],
+                    "6.1": [
+                        { name: "Cuerno de diablillo fino", quantity: 1 },
+                        { name: "Leche de oveja", quantity: 24 },
+                        { name: "Dedalera esquiva", quantity: 12 },
+                        { name: "Huevos de gallina", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "6.2": [
+                        { name: "Cuerno de diablillo fino", quantity: 1 },
+                        { name: "Leche de oveja", quantity: 24 },
+                        { name: "Dedalera esquiva", quantity: 12 },
+                        { name: "Huevos de gallina", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "6.3": [
+                        { name: "Cuerno de diablillo fino", quantity: 1 },
+                        { name: "Leche de oveja", quantity: 24 },
+                        { name: "Dedalera esquiva", quantity: 12 },
+                        { name: "Huevos de gallina", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            
+            // Tier 5
+            {
+                id: 20,
+                name: "Poción Ácida",
+                tier: 5,
+                subtiers: ["5.0", "5.1", "5.2", "5.3"],
+                materials: {
+                    "5.0": [
+                        { name: "Patas de espíritu fino", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 48 },
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Leche de cabra", quantity: 12 }
+                    ],
+                    "5.1": [
+                        { name: "Patas de espíritu fino", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 48 },
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Leche de cabra", quantity: 12 },
+                        { name: "Extracto arcano básico", quantity: 30 }
+                    ],
+                    "5.2": [
+                        { name: "Patas de espíritu fino", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 48 },
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Leche de cabra", quantity: 12 },
+                        { name: "Extracto Arcano Refinado", quantity: 30 }
+                    ],
+                    "5.3": [
+                        { name: "Patas de espíritu fino", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 48 },
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Leche de cabra", quantity: 12 },
+                        { name: "Extracto Arcano Puro", quantity: 30 }
+                    ]
+                },
+                batchSize: 10
+            },
+            {
+                id: 21,
+                name: "Poción Calmante",
+                tier: 5,
+                subtiers: ["5.0", "5.1", "5.2", "5.3"],
+                materials: {
+                    "5.0": [
+                        { name: "Garras de sombra finas", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 48 },
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Agárico arcano", quantity: 12 }
+                    ],
+                    "5.1": [
+                        { name: "Garras de sombra finas", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 48 },
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Agárico arcano", quantity: 12 },
+                        { name: "Extracto arcano básico", quantity: 30 }
+                    ],
+                    "5.2": [
+                        { name: "Garras de sombra finas", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 48 },
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Agárico arcano", quantity: 12 },
+                        { name: "Extracto Arcano Refinado", quantity: 30 }
+                    ],
+                    "5.3": [
+                        { name: "Garras de sombra finas", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 48 },
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Agárico arcano", quantity: 12 },
+                        { name: "Extracto Arcano Puro", quantity: 30 }
+                    ]
+                },
+                batchSize: 10
+            },
+            {
+                id: 22,
+                name: "Poción Pegajosa",
+                tier: 5,
+                subtiers: ["5.0", "5.1", "5.2", "5.3"],
+                materials: {
+                    "5.0": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Huevos de ganso", quantity: 6 }
+                    ],
+                    "5.1": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Huevos de ganso", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "5.2": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Huevos de ganso", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "5.3": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Huevos de ganso", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 23,
+                name: "Poción de Resistencia",
+                tier: 5,
+                subtiers: ["5.0", "5.1", "5.2", "5.3"],
+                materials: {
+                    "5.0": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Leche de cabra", quantity: 6 }
+                    ],
+                    "5.1": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Leche de cabra", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "5.2": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Leche de cabra", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "5.3": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Leche de cabra", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 24,
+                name: "Poción de Gigantificación",
+                tier: 5,
+                subtiers: ["5.0", "5.1", "5.2", "5.3"],
+                materials: {
+                    "5.0": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Huevos de ganso", quantity: 6 }
+                    ],
+                    "5.1": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Huevos de ganso", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "5.2": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Huevos de ganso", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "5.3": [
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Bardana almenada", quantity: 12 },
+                        { name: "Huevos de ganso", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 25,
+                name: "Poción Limpiadora",
+                tier: 5,
+                subtiers: ["5.0", "5.1", "5.2", "5.3"],
+                materials: {
+                    "5.0": [
+                        { name: "Raíz fina de Silvio", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Consuelda de hojas brillantes", quantity: 12 },
+                        { name: "Mantequilla de cabra", quantity: 6 }
+                    ],
+                    "5.1": [
+                        { name: "Raíz fina de Silvio", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Consuelda de hojas brillantes", quantity: 12 },
+                        { name: "Mantequilla de cabra", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "5.2": [
+                        { name: "Raíz fina de Silvio", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Consuelda de hojas brillantes", quantity: 12 },
+                        { name: "Mantequilla de cabra", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "5.3": [
+                        { name: "Raíz fina de Silvio", quantity: 1 },
+                        { name: "Cardo de dragón", quantity: 24 },
+                        { name: "Consuelda de hojas brillantes", quantity: 12 },
+                        { name: "Mantequilla de cabra", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            
+            // Tier 4
+            {
+                id: 26,
+                name: "Poción de Fuego Infernal Menor",
+                tier: 4,
+                subtiers: ["4.0", "4.1", "4.2", "4.3"],
+                materials: {
+                    "4.0": [
+                        { name: "Cuerno de diablillo robusto", quantity: 1 },
+                        { name: "Leche de cabra", quantity: 8 }
+                    ],
+                    "4.1": [
+                        { name: "Cuerno de diablillo robusto", quantity: 1 },
+                        { name: "Leche de cabra", quantity: 8 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "4.2": [
+                        { name: "Cuerno de diablillo robusto", quantity: 1 },
+                        { name: "Leche de cabra", quantity: 8 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "4.3": [
+                        { name: "Cuerno de diablillo robusto", quantity: 1 },
+                        { name: "Leche de cabra", quantity: 8 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 27,
+                name: "Poción de Veneno Menor",
+                tier: 4,
+                subtiers: ["4.0", "4.1", "4.2", "4.3"],
+                materials: {
+                    "4.0": [
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Consuelda de hojas brillantes", quantity: 4 }
+                    ],
+                    "4.1": [
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Consuelda de hojas brillantes", quantity: 4 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "4.2": [
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Consuelda de hojas brillantes", quantity: 4 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "4.3": [
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Consuelda de hojas brillantes", quantity: 4 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 28,
+                name: "Poción de Energía",
+                tier: 4,
+                subtiers: ["4.0", "4.1", "4.2", "4.3"],
+                materials: {
+                    "4.0": [
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Leche de cabra", quantity: 6 }
+                    ],
+                    "4.1": [
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Leche de cabra", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "4.2": [
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Leche de cabra", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ],
+                    "4.3": [
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Leche de cabra", quantity: 6 },
+                        { name: "Extracto Arcano Puro", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 29,
+                name: "Poción de Curación",
+                tier: 4,
+                subtiers: ["4.0", "4.1", "4.2"],
+                materials: {
+                    "4.0": [
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Huevos de gallina", quantity: 6 }
+                    ],
+                    "4.1": [
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Huevos de gallina", quantity: 6 },
+                        { name: "Extracto arcano básico", quantity: 15 }
+                    ],
+                    "4.2": [
+                        { name: "Bardana almenada", quantity: 24 },
+                        { name: "Huevos de gallina", quantity: 6 },
+                        { name: "Extracto Arcano Refinado", quantity: 15 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 30,
+                name: "Poción de Berserk Menor",
+                tier: 4,
+                subtiers: ["4.0", "4.1", "4.2", "4.3"],
+                materials: {
+                    "4.0": [
+                        { name: "Colmillos de hombre lobo robustos", quantity: 1 },
+                        { name: "Bardana almenada", quantity: 8 }
+                    ],
+                    "4.1": [
+                        { name: "Colmillos de hombre lobo robustos", quantity: 1 },
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "4.2": [
+                        { name: "Colmillos de hombre lobo robustos", quantity: 1 },
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "4.3": [
+                        { name: "Colmillos de hombre lobo robustos", quantity: 1 },
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 31,
+                name: "Tornado Menor en una Botella",
+                tier: 4,
+                subtiers: ["4.0", "4.1", "4.2", "4.3"],
+                materials: {
+                    "4.0": [
+                        { name: "Pluma del amanecer robusta", quantity: 1 },
+                        { name: "Bardana almenada", quantity: 8 }
+                    ],
+                    "4.1": [
+                        { name: "Pluma del amanecer robusta", quantity: 1 },
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "4.2": [
+                        { name: "Pluma del amanecer robusta", quantity: 1 },
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "4.3": [
+                        { name: "Pluma del amanecer robusta", quantity: 1 },
+                        { name: "Bardana almenada", quantity: 8 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            },
+            
+            // Tier 3
+            {
+                id: 32,
+                name: "Poción de Ácido Menor",
+                tier: 3,
+                subtiers: ["3.0", "3.1", "3.2", "3.3"],
+                materials: {
+                    "3.0": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Patas de espíritu robusto", quantity: 1 }
+                    ],
+                    "3.1": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Patas de espíritu robusto", quantity: 1 },
+                        { name: "Extracto arcano básico", quantity: 10 }
+                    ],
+                    "3.2": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Patas de espíritu robusto", quantity: 1 },
+                        { name: "Extracto Arcano Refinado", quantity: 10 }
+                    ],
+                    "3.3": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Patas de espíritu robusto", quantity: 1 },
+                        { name: "Extracto Arcano Puro", quantity: 10 }
+                    ]
+                },
+                batchSize: 10
+            },
+            {
+                id: 33,
+                name: "Poción de Purificación Menor",
+                tier: 3,
+                subtiers: ["3.0", "3.1", "3.2", "3.3"],
+                materials: {
+                    "3.0": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Raíz de Silvio Rugosa", quantity: 1 }
+                    ],
+                    "3.1": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Raíz de Silvio Rugosa", quantity: 1 },
+                        { name: "Extracto arcano básico", quantity: 10 }
+                    ],
+                    "3.2": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Raíz de Silvio Rugosa", quantity: 1 },
+                        { name: "Extracto Arcano Refinado", quantity: 10 }
+                    ],
+                    "3.3": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Raíz de Silvio Rugosa", quantity: 1 },
+                        { name: "Extracto Arcano Puro", quantity: 10 }
+                    ]
+                },
+                batchSize: 10
+            },
+            {
+                id: 34,
+                name: "Poción de Energía Menor",
+                tier: 2,
+                subtiers: ["2.0", "2.1", "2.2", "2.3"],
+                materials: {
+                    "2.0": [
+                        { name: "Agárico arcano", quantity: 8 }
+                    ],
+                    "2.1": [
+                        { name: "Agárico arcano", quantity: 8 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "2.2": [
+                        { name: "Agárico arcano", quantity: 8 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "2.3": [
+                        { name: "Agárico arcano", quantity: 8 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 35,
+                name: "Poción de Resistencia Menor",
+                tier: 3,
+                subtiers: ["3.0", "3.1", "3.2", "3.3"],
+                materials: {
+                    "3.0": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 }
+                    ],
+                    "3.1": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "3.2": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "3.3": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 36,
+                name: "Poción de Curación Menor",
+                tier: 2,
+                subtiers: ["2.0", "2.1", "2.2", "2.3"],
+                materials: {
+                    "2.0": [
+                        { name: "Agárico arcano", quantity: 8 }
+                    ],
+                    "2.1": [
+                        { name: "Agárico arcano", quantity: 8 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "2.2": [
+                        { name: "Agárico arcano", quantity: 8 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "2.3": [
+                        { name: "Agárico arcano", quantity: 8 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 37,
+                name: "Poción Pegajosa Menor",
+                tier: 3,
+                subtiers: ["3.0", "3.1", "3.2", "3.3"],
+                materials: {
+                    "3.0": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 }
+                    ],
+                    "3.1": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "3.2": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "3.3": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 38,
+                name: "Poción de Gigantificación Menor",
+                tier: 3,
+                subtiers: ["3.0", "3.1", "3.2", "3.3"],
+                materials: {
+                    "3.0": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 }
+                    ],
+                    "3.1": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "3.2": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "3.3": [
+                        { name: "Consuelda de hojas brillantes", quantity: 8 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            },
+            {
+                id: 39,
+                name: "Poción Calmante Menor",
+                tier: 3,
+                subtiers: ["3.0", "3.1", "3.2", "3.3"],
+                materials: {
+                    "3.0": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Garras de sombra robustas", quantity: 1 }
+                    ],
+                    "3.1": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Garras de sombra robustas", quantity: 1 },
+                        { name: "Extracto arcano básico", quantity: 10 }
+                    ],
+                    "3.2": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Garras de sombra robustas", quantity: 1 },
+                        { name: "Extracto Arcano Refinado", quantity: 10 }
+                    ],
+                    "3.3": [
+                        { name: "Consuelda de hojas brillantes", quantity: 16 },
+                        { name: "Garras de sombra robustas", quantity: 1 },
+                        { name: "Extracto Arcano Puro", quantity: 10 }
+                    ]
+                },
+                batchSize: 10
+            },
+            {
+                id: 40,
+                name: "Poción de Recolección Menor",
+                tier: 4,
+                subtiers: ["4.0", "4.1", "4.2", "4.3"],
+                materials: {
+                    "4.0": [
+                        { name: "Diente de piedra rúnica rugosa", quantity: 1 },
+                        { name: "Mantequilla de cabra", quantity: 8 }
+                    ],
+                    "4.1": [
+                        { name: "Diente de piedra rúnica rugosa", quantity: 1 },
+                        { name: "Mantequilla de cabra", quantity: 8 },
+                        { name: "Extracto arcano básico", quantity: 5 }
+                    ],
+                    "4.2": [
+                        { name: "Diente de piedra rúnica rugosa", quantity: 1 },
+                        { name: "Mantequilla de cabra", quantity: 8 },
+                        { name: "Extracto Arcano Refinado", quantity: 5 }
+                    ],
+                    "4.3": [
+                        { name: "Diente de piedra rúnica rugosa", quantity: 1 },
+                        { name: "Mantequilla de cabra", quantity: 8 },
+                        { name: "Extracto Arcano Puro", quantity: 5 }
+                    ]
+                },
+                batchSize: 5
+            }
+        ];
+
+        // Variables globales
+        let currentPotion = null;
+        let currentSubtier = null;
+        let materialCosts = {};
+
+        // Función para formatear números (Silver)
+        function formatSilver(amount) {
+            if (amount >= 1000000) {
+                return (amount / 1000000).toFixed(2) + 'm';
+            }
+            if (amount >= 1000) {
+                return (amount / 1000).toFixed(1) + 'k';
+            }
+            return amount.toString();
+        }
+
+        // Inicializar la calculadora
+        function initCalculator() {
+            const potionSelect = document.getElementById('potion-select');
+            
+            // Llenar selector de pociones
+            potions.forEach(potion => {
+                const option = document.createElement('option');
+                option.value = potion.id;
+                option.textContent = `${potion.name} (T${potion.tier})`;
+                option.classList.add(`tier-${potion.tier}`);
+                potionSelect.appendChild(option);
+            });
+            
+            // Establecer primera poción como seleccionada
+            currentPotion = potions[0];
+            updateSubtiers();
+            calculateAll();
+        }
+
+        // Actualizar subtiers cuando se cambia la poción
+        function updateRecipe() {
+            const potionId = parseInt(document.getElementById('potion-select').value);
+            currentPotion = potions.find(p => p.id === potionId);
+            updateSubtiers();
+        }
+
+        // Actualizar selector de subtiers
+        function updateSubtiers() {
+            const tierSelect = document.getElementById('tier-select');
+            tierSelect.innerHTML = '';
+            
+            if (!currentPotion) return;
+            
+            currentPotion.subtiers.forEach(subtier => {
+                const option = document.createElement('option');
+                option.value = subtier;
+                option.textContent = `T${subtier}`;
+                option.classList.add(`tier-${currentPotion.tier}`);
+                tierSelect.appendChild(option);
+            });
+            
+            currentSubtier = currentPotion.subtiers[0];
+            calculateAll();
+        }
+
+        // Calcular ingredientes requeridos
+        function calculateIngredients() {
+            if (!currentPotion || !currentSubtier) return;
+            
+            const batchCount = parseInt(document.getElementById('batch-count').value) || 1;
+            const materials = currentPotion.materials[currentSubtier];
+            const batchSize = currentPotion.batchSize;
+            
+            if (!materials) return;
+            
+            // Calcular número de lotes necesarios
+            const batchesNeeded = Math.ceil(batchCount / batchSize);
+            
+            // Actualizar tabla de ingredientes
+            const ingredientsBody = document.getElementById('ingredients-body');
+            ingredientsBody.innerHTML = '';
+            
+            // Procesar cada material
+            materials.forEach(material => {
+                // Calcular cantidades
+                const quantityPerBatch = material.quantity;
+                const totalNeeded = quantityPerBatch * batchesNeeded;
+                
+                // Agregar a la tabla
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${material.name}</td>
+                    <td>${totalNeeded}</td>
+                    <td><input type="number" min="0" class="unit-price" value="${materialCosts[material.name] || 0}" oninput="calculateCosts()"></td>
+                    <td class="material-cost">0</td>
+                `;
+                ingredientsBody.appendChild(row);
+            });
+        }
+
+        // Calcular costos totales
+        function calculateCosts() {
+            if (!currentPotion || !currentSubtier) return;
+            
+            const batchCount = parseInt(document.getElementById('batch-count').value) || 1;
+            const returnRate = parseFloat(document.getElementById('return-rate').value) || 0;
+            const materials = currentPotion.materials[currentSubtier];
+            const batchSize = currentPotion.batchSize;
+            const batchesNeeded = Math.ceil(batchCount / batchSize);
+            
+            let totalMaterialCost = 0;
+            
+            // Calcular costo de cada material
+            const unitPriceInputs = document.querySelectorAll('.unit-price');
+            unitPriceInputs.forEach(input => {
+                const row = input.closest('tr');
+                const materialName = row.cells[0].textContent;
+                const quantity = parseInt(row.cells[1].textContent);
+                const unitPrice = parseFloat(input.value) || 0;
+                
+                // Guardar precio para futuras recargas
+                materialCosts[materialName] = unitPrice;
+                
+                const materialCost = quantity * unitPrice;
+                row.cells[3].textContent = formatSilver(materialCost);
+                
+                totalMaterialCost += materialCost;
+            });
+            
+            // Calcular devoluciones
+            const returnAmount = totalMaterialCost * (returnRate / 100);
+            const netMaterialCost = totalMaterialCost - returnAmount;
+            
+            // Actualizar resumen de costos
+            const costsSummary = document.getElementById('costs-summary');
+            costsSummary.innerHTML = `
+                <div class="summary-item">
+                    <span>Costo Materiales:</span>
+                    <strong>${formatSilver(totalMaterialCost)}</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Devoluciones (${returnRate}%):</span>
+                    <strong>-${formatSilver(returnAmount)}</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Costo Neto Materiales:</span>
+                    <strong>${formatSilver(netMaterialCost)}</strong>
+                </div>
+                <div class="summary-item total">
+                    <span>Costo Total:</span>
+                    <strong>${formatSilver(netMaterialCost)}</strong>
+                </div>
+            `;
+            
+            // Calcular ganancias si hay precio de venta
+            const potionPrice = parseFloat(document.getElementById('potion-price').value) || 0;
+            if (potionPrice > 0) {
+                calculateProfit();
+            }
+        }
+
+        // Calcular todo en secuencia
+        function calculateAll() {
+            calculateIngredients();
+            calculateCosts();
+        }
+
+        // Calcular ganancias
+        function calculateProfit() {
+            // Obtener el costo neto de materiales desde el DOM
+            const netMaterialCostElem = document.querySelector('#costs-summary .total strong');
+            if (!netMaterialCostElem) {
+                // Si no hay elemento, ocultamos la sección de ganancias
+                document.getElementById('profit-loss').style.display = 'none';
+                return;
+            }
+            
+            const netMaterialCostText = netMaterialCostElem.textContent;
+            // Eliminar caracteres no numéricos excepto el punto decimal
+            const netMaterialCost = parseFloat(netMaterialCostText.replace(/[^0-9.]/g, '') || '0');
+            const batchCount = parseInt(document.getElementById('batch-count').value) || 1;
+            const potionPrice = parseFloat(document.getElementById('potion-price').value) || 0;
+            
+            if (potionPrice > 0) {
+                const profitLossDiv = document.getElementById('profit-loss');
+                const profitLossContent = document.getElementById('profit-loss-content');
+                
+                const totalRevenue = potionPrice * batchCount;
+                const profit = totalRevenue - netMaterialCost;
+                
+                // Determinar si hay ganancia o pérdida
+                const isProfit = profit >= 0;
+                profitLossDiv.className = isProfit ? 'profit-loss profit' : 'profit-loss loss';
+                
+                // Actualizar contenido
+                profitLossContent.innerHTML = `
+                    <div class="profit-loss-item">
+                        <span>Ingresos Totales:</span>
+                        <span>${formatSilver(totalRevenue)}</span>
+                    </div>
+                    <div class="profit-loss-item">
+                        <span>Costo Materiales:</span>
+                        <span>${formatSilver(netMaterialCost)}</span>
+                    </div>
+                    <div class="profit-loss-item total">
+                        <span>${isProfit ? 'Ganancia' : 'Pérdida'}:</span>
+                        <span class="${isProfit ? 'profit-value' : 'loss-value'}">${isProfit ? '+' : ''}${formatSilver(profit)}</span>
+                    </div>
+                    <div class="profit-loss-item">
+                        <span>Ganancia por Poción:</span>
+                        <span class="${isProfit ? 'profit-value' : 'loss-value'}">${isProfit ? '+' : ''}${formatSilver(profit / batchCount)}</span>
+                    </div>
+                `;
+                
+                // Mostrar sección
+                profitLossDiv.style.display = 'block';
+            } else {
+                document.getElementById('profit-loss').style.display = 'none';
+            }
+        }
+
+        // Actualizar materiales cuando se cambia el subtier
+        function updateMaterials() {
+            const subtier = document.getElementById('tier-select').value;
+            currentSubtier = subtier;
+            calculateAll();
+        }
+
+        // Inicializar al cargar la página
+        window.onload = initCalculator;
+    </script>
+</body>
+</html>
